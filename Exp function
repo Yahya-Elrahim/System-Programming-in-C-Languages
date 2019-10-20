@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+float findExp(float root,float number);
+
+int main(void)
+{
+    //Örnek : 3^3.5 = 3^3 * 3^0.5
+    //3^0.5 = 3^5/10
+
+    float num,exponent,fpart=1,spart=1.0,result=0.0,numInRoot=1,mRoot=10.0, msecondPart=1.0;
+
+    //get the base number from user.
+    printf("enter the base number: ");
+    scanf("%f", &num);
+    //get the exponent number.
+    printf("enter the exponent number: ");
+    scanf("%f", &exponent);
+     // take just the integer number from the float number x.000000.
+    int intpart = (int)exponent;
+    //get the fraction number 3.05-3.00=0.03.
+    float decpart = exponent - intpart;
+    //Using for loop we will get the first integer part that his exponent is a integer (3^2).
+    //for example : 3^2.5 = (3^2)*(3^0.2) = (3^2)*(3^2/10).
+
+    for(int i=0; i <intpart; i++)
+    {
+        fpart=fpart*num;
+    }
+
+    //getting the second part (3^2/10)
+    //get the integer numbers from decimal part
+    //  2/10 >>> num=2
+    float yourNumber = decpart;
+    char buffer[32];
+    snprintf(buffer, 32, "%g", yourNumber);
+    strtok(buffer, "."); // Here we would get the part before . , should still check
+    char* fraction = strtok(NULL, ".");
+    int fractionAsInt = atoi(fraction);
+
+    int count=0;
+
+
+    if(fractionAsInt!=0)
+    {
+    //calculate the second part that his exponent is a fractional number.
+    //3^0.5 = 3^(5/10)  >>>  3*3*3*3*3
+    for(int i=0; i<fractionAsInt; i++)
+    {
+        numInRoot=num*numInRoot;
+    }
+     
+     //claculate the root of the 10 th degree  here the number is 10.
+     msecondPart=findExp(mRoot,numInRoot);
+    }
+
+
+
+    printf("result %f \ %f",msecondPart*fpart,msecondPart);
+
+
+
+    return 0;
+
+
+}
+float findExp(float root,float number)
+{
+    // getting the root of number.
+    printf(" r %f \n",root);
+     printf(" n %f \n",number);
+     double b=number;
+    double spart=0.001;
+     double r=root;
+
+    while(pow(spart,r)<(b + 0.05)){
+    spart+= 0.001;
+     }
+
+     return spart;
+}
+
