@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    float a=1.0,b=2.0,c=3.0,d=4.0,e=5.0,f=6.0,g=7.0,h=8.0,x=9.0,y=10.0,z=11;
+
+    float fp=1/(2*a*b);
+    printf("result 1: %f \n",fp);
+
+    float sp=c*d*((e*f-g)/h);
+    printf("result 2: %f \n",sp);
+
+    float tp=x*(y+z);
+    printf("result 3: %f \n",tp);
+
+    float result=(fp-sp)/tp;
+    printf("result 4: %f \n",result);
+    return 0;
+}
