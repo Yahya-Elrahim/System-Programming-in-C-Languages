@@ -14,7 +14,7 @@ bool box_1_killed=false,box_2_killed=false,box_3_killed=false,box_4_killed=false
 // Boxlerin X'e göre pozisyonları .
 int box_1_p=16,box_2_p=32,box_3_p=48,box_4_p=64,box_5_p=78;
 
-void* threadFunction(void* args)
+void* gRandomBoxes(void* args)
 {
      // Generate a different numbers to set squares in different y position.
     int p_y[5];
@@ -32,7 +32,7 @@ int main()
     pthread_t id;
 
     /*creating thread*/
-    pthread_create(&id,NULL,&threadFunction,NULL);
+    pthread_create(&id,NULL,&gRandomBoxes,NULL);
     while(1)
     {
         int key;
