@@ -1,0 +1,318 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <windows.h>
+#include <pthread.h>
+#include <stdbool.h>
+
+
+int x=3,y=2,rectangle_position=48,rectangle_y_p=28;
+int p1,p2,p3,p4,p5;
+int s_number=3,score=0,state=3;
+int r1,r2,r3,r4,r5;
+bool box_1_killed=false,box_2_killed=false,box_3_killed=false,box_4_killed=false,box_5_killed=false,fire_state=false;
+// Boxlerin X'e göre pozisyonları .
+int box_1_p=16,box_2_p=32,box_3_p=48,box_4_p=64,box_5_p=78;
+
+void* threadFunction(void* args)
+{
+     // Generate a different numbers to set squares in different y position.
+    int p_y[5];
+    for(int i=0; i <5; i++)
+   {
+       p_y[i]=rand()%8;
+   }
+
+   move_boxes(p_y[0],p_y[1],p_y[2],p_y[3],p_y[4]);
+}
+
+int main()
+{
+    /*creating thread id*/
+    pthread_t id;
+
+    /*creating thread*/
+    pthread_create(&id,NULL,&threadFunction,NULL);
+    while(1)
+    {
+        int key;
+
+            key=_getch();
+
+        switch(key)
+        {
+            case 77:  // Sağ Yönünde hareket ederse
+                ClearConsoleToColors(6,0);
+                rectangle_position++;
+                // kutucukları çizsin
+                draw_box(8,1,rectangle_position,rectangle_y_p);
+                draw_box(2,1,rectangle_position+3,rectangle_y_p-1);
+                break;
+            case 75:  // Sol Yönünde hareket ederse
+                ClearConsoleToColors(6,0);
+                rectangle_position--;
+                draw_box(8,1,rectangle_position,rectangle_y_p);
+                draw_box(2,1,rectangle_position+3,rectangle_y_p-1);
+                break;
+            case 13:
+                // Eğer Enter tıklanırsa ateş açsın .
+                for(int j=0; j <rectangle_y_p-r2; j++)
+                {
+
+                    gotoxy(rectangle_position+5,rectangle_y_p-j);
+                    printf("*");
+                    Sleep(10);
+                }
+                // Eğer Ateş bir kutucuğa değip değmediğina baksın.
+                // Değerse değmiş olduğu kutucuk rastgele konuma geri göndersin yani yenisi çizmiş gibi ve 1 skor attirsın
+
+                if(rectangle_position +5>=box_1_p && rectangle_position +4<=box_1_p+x)
+                {
+                    score++;
+                    fire_state=true;
+                    box_2_killed=true;
+
+                }             // 53            //32                                 //36
+                else if(rectangle_position+5 >=box_2_p && rectangle_position +4<=box_2_p+x)
+                {
+                    score++;
+                    fire_state=true;
+                    box_2_killed=true;
+
+                }
+                 else if(rectangle_position+5 >=box_3_p && rectangle_position +4<=box_3_p+x)
+                {
+                    score++;
+                    fire_state=true;
+                    box_3_killed=true;
+
+                }
+                 else if(rectangle_position +5>=box_4_p && rectangle_position +4<=box_4_p+x)
+                {
+                    score++;
+                    fire_state=true;
+                    box_4_killed=true;
+
+                }
+                 else if(rectangle_position +5>=box_5_p && rectangle_position +4<=box_5_p+x)
+                {
+                    score++;
+                    fire_state=true;
+                    box_5_killed=true;
+
+                }
+                break;
+        }
+
+    }
+
+    return 0;
+}
+
+// Y yöninde rastgele  kutucuk oluşturmak için farklı sayılar üretip
+// move_boxes adinda bir fonksiyonu çağırarak parametreleri gönderecek.
+
+void move_boxes(int a,int b,int c,int d,int e)
+{
+
+    int p1=a,p2=b,p3=c,p4=d,p5=e,g=1,m=1,change_color=1, sinir_gecen=0;
+
+    for(m=1; m<25; m++)
+    {
+        // Yeni deşiken tanımlama sebebi kutucuklara ateş degerse
+        // "0" değeri gönderip yine en üsten başlsın diye.
+        r1=p1+m,r2=p2+m,r3=p3+m,r4=p4+m,r5=p5+m;
+        // Değişkenler en üst tanımladığım için süekli erişilecek
+        // fire_state değişkenin tanımlama sebebi hız açısından
+        // yani her seferinde Ateş açılıp açılmadığına baksın.
+        //Eğer ateş açıldıysa hangi box'e değdiğine baksin ve durumu değişsin.
+
+        if(fire_state)
+        {
+            fire_state=false;
+             if(box_1_killed)
+             {
+                p1=6-r1;
+                box_1_p=rand()%5;
+                box_1_killed=false;
+             }
+
+             else if(box_2_killed)
+             {
+                p2=6-r2;
+                box_3_p=rand()%10;
+                box_2_killed=false;
+             }
+             if(box_3_killed)
+             {
+                p3=6-r3;
+                box_3_p=rand()%8;
+                box_3_killed=false;
+             }
+
+             else if(box_4_killed)
+             {
+                p4=6-r4;
+                box_4_p=rand()%15;
+                box_4_killed=false;
+             }
+             else if(box_4_killed)
+             {
+                p5=1-r5;
+                box_5_p=rand()%20;
+                box_5_killed=false;
+
+             }
+        }
+        // Renkler Sürekli değşsin diye 1'le 14 arasindaki renklerle renklendirsin tüm ekrandaki
+        if(change_color >14)
+        {
+            change_color=1;
+        }
+        ClearConsoleToColors(change_color,0);
+        // " dikdörtgen " yani ateş eden dikdörtgen çizsin .
+        draw_box(8,1,rectangle_position,rectangle_y_p);
+        draw_box(2,1,rectangle_position+3,rectangle_y_p-1);
+       // draw_box(50,30,0,0);
+       // " 5 " beş kutucuk çizsin eğer istersek daha fazla aynı metot farklı değerlerle
+       // cağrırarak kutucuk çizebiliriz .
+        draw_box(x,y,box_1_p,r1);
+        draw_box(x,y,box_2_p,r2);
+        draw_box(x,y,box_3_p,r3);
+        draw_box(x,y,box_4_p,r4);
+        draw_box(x,y,box_5_p,r5);
+        change_color++;
+
+        // kutucuklarından bir tanesi sınır geçip geçmediğine kontrol ederek geçenleri sayısın
+        // Eğer oyuncu'nun kazanmış olduğu skorlarını geçenleri sayısından çıkartır
+        // Eğer " 0" dan küçük veya eşitse skor'u yazdırıp oyun biter aksi takdirde
+        // yeni ve rastgele kutucuk oluşturur
+        if(r1==rectangle_y_p-3 || r2==rectangle_y_p-3 || r3==rectangle_y_p-3 || r4==rectangle_y_p-3 || r5==rectangle_y_p-3)
+        {
+            sinir_gecen++;
+            if(score -sinir_gecen <= 0)
+            {
+              system("cls");
+              gotoxy(40,10);
+              printf("Game Over !!  Your Score is : %i",score);
+              break;
+            }
+            else
+            {
+                int rnd_x=rand()%5;
+                int rnd_y=rand()%3;
+                draw_box(x,y,rnd_x,rnd_y);
+            }
+        }
+        // Bir süreliğine dursun ,
+        Sleep(1000);
+
+
+    }
+}
+// Ekrandaki cizgileri pozisyonlarını belirten metot .
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+// Kutucukları çizen metot.
+// parametreleri ise kutucukların Genişliği , uzunluğu , X'e göre pozisyonu , Y' göre pozisyonu
+ // Her for loop arasında Gotoxy metodu çağrıma sebebi şöyle :
+// çizgiler " 0 " x pozisyonundan çizmeye başlamasın diye .
+void draw_box(int horizontal,int vertical,int postion_x,int postion_y)
+{
+    int verticalV=vertical;
+    int horizontalV=horizontal;
+    char karakter=0;
+
+    // left corner =218;
+    gotoxy(postion_x, postion_y);                 //Goto xy
+    karakter=218;
+    printf("%c",karakter);
+    // Draw the top line
+     // Üst kenarı çizer
+    for(int i=0; i < horizontalV; i++)
+    {
+        // top line
+        karakter=196;
+        printf("%c",karakter);
+        if(i == horizontalV-1)
+        {
+            //Right corner
+            karakter=191;
+            printf("%c\n",karakter);
+        }
+    }
+      //Draw the left and the right column
+
+     for(int i=0; i<verticalV; i++)
+        {
+            //Column
+            gotoxy(postion_x, postion_y+i+1);      //Goto xy
+            karakter=179;
+            printf("%c",karakter);
+            //Leave space | space   |
+            for(int j=0; j < horizontalV; j++)
+            {
+                printf(" ");
+                if(j==horizontalV-1)
+                {
+                    printf("%c\n",karakter);
+                }
+            }
+
+        }
+        // Sol alt corner
+        gotoxy(postion_x, postion_y+verticalV);     //Goto xy
+        karakter=192;
+        printf("%c",karakter);
+
+        // Draw the Bottom line
+        for(int i=0; i < horizontalV; i++)
+        {
+            karakter=196;
+            printf("%c",karakter);
+            if(i==horizontalV-1)
+            {
+                //right corner
+                karakter=217;
+                printf("%c",karakter);
+            }
+
+        }
+
+}
+// Renkleri deiştiren metot.
+
+void ClearConsoleToColors(int ForgC, int BackC)
+{
+ WORD wColor = ((BackC & 0x0F) << 4) + (ForgC & 0x0F);
+               //Get the handle to the current output buffer...
+ HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+                     //This is used to reset the carat/cursor to the top left.
+ COORD coord = {0, 0};
+                  //A return value... indicating how many chars were written
+                    //   not used but we need to capture this since it will be
+                      //   written anyway (passing NULL causes an access violation).
+ DWORD count;
+
+                               //This is a structure containing all of the console info
+                      // it is used here to find the size of the console.
+ CONSOLE_SCREEN_BUFFER_INFO csbi;
+                 //Here we will set the current color
+ SetConsoleTextAttribute(hStdOut, wColor);
+ if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+ {
+                          //This fills the buffer with a given character (in this case 32=space).
+      FillConsoleOutputCharacter(hStdOut, (TCHAR) 32, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+
+      FillConsoleOutputAttribute(hStdOut, csbi.wAttributes, csbi.dwSize.X * csbi.dwSize.Y, coord, &count );
+                          //This will set our cursor position for the next print statement.
+      SetConsoleCursorPosition(hStdOut, coord);
+ }
+ return;
+}
+
