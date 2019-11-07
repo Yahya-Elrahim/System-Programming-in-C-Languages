@@ -1,0 +1,68 @@
+#include <stdio.h>
+# include<windows.h>
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+int gotoxy(int x,int y)
+{
+    COORD coord = {x,y};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+}
+
+
+
+
+int  main()
+{
+    draw_box(3,2,4,5);
+    return 0;
+
+}
+void draw_box(int horizontal,int vertical,int postion_x,int postion_y)
+{
+    int verticalV=vertical;
+    int horizontalV=horizontal;
+    char karakter=0;
+
+    // left corner =218;
+    gotoxy(postion_x, postion_y);                 //Goto xy
+    printf("%c",218);
+    // Draw the top line
+     // Üst kenarı çizer
+    for(int i=0; i < horizontal; i++)
+    {
+        // top line
+        karakter=196;
+        printf("%c",karakter);
+
+    }
+
+    printf("%c",191);
+
+
+     for(int i=1; i<=verticalV; i++)
+        {
+            //Column
+            gotoxy(postion_x, postion_y+i);      //Goto xy
+            karakter=179;
+            printf("%c",karakter);
+            //Leave space | space   |
+            gotoxy(horizontalV+postion_x+1,postion_y+i);
+            printf("%c",karakter);
+        }
+        // Sol alt corner
+        gotoxy(postion_x, postion_y+verticalV);     //Goto xy
+        karakter=192;
+        printf("%c",karakter);
+
+        // Draw the Bottom line
+        for(int i=0; i < horizontalV; i++)
+        {
+            karakter=196;
+            printf("%c",karakter);
+
+
+        }
+        printf("%c",217);
+
+}
+
